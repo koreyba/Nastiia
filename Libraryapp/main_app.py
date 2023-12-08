@@ -2,7 +2,7 @@ from db_manager import DBManager
 from classes import Book, Author
 
 # Connect to DB:
-db_manager = DBManager("mydatabase.db")
+db_manager = DBManager("Libraryapp\mydatabase.db")
 
 # How to add a new Author with his books:
 author = Author('Nastia', 1992)
