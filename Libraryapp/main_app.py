@@ -1,34 +1,15 @@
-from db_manager import DBManager
-from classes import Book, Author
+from classes import Library
 
-# Connect to DB:
-db_manager = DBManager("Libraryapp\mydatabase.db")
+library = Library()
+all_authors = library.get_all_authors()
 
-# How to add a new Author with his books:
-author = Author('Nastia', 1992)
-book = Book("Never written book", 2023, 0, author)
-author.add_book(book)
+library.print_authors(all_authors)
 
-# Save author with already added books to DB:
-db_manager.save_author(author)
 
-# How to add a new book to existing author:
-authors = db_manager.get_all_authors()
-existing_author = authors[0]
-book = Book("My book", 2023, 0, existing_author)
-
-#save book to DB:
-db_manager.save_book(book)
-
-#Print all books and authors:
-books = db_manager.get_all_books()
-
-for author in authors:
-    print(f"Автор: {author.name}, Книги: {[book.title for book in author.books]}")
-
-for book in books:
-    print(f"Книга: {book.title}, Дата релиза {book.release_date}, Автор: {book.author.name} ")
-
-# Close DB connection:
-db_manager.close()
-
+"""вывести все книги, включая год и все такое
+вывести книги после 1900года
+вывсти авторов на заданную букву
+вывести автров, у которых больше одной книги
+вывести авторов, у которых больше двух книг (с списком книг)
+вывести авторов, у которых нет книг
+вывести книги, у которых в названии три слова"""
