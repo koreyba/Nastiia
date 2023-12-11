@@ -50,6 +50,33 @@ class Library:
             # for b in a.books:
             #     print(b.title)
 
+    def print_books(self, list_of_books: list[Book]):
+        for book in list_of_books:
+            print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
+
+    def print_books_after_1900y(self, list_of_books: list[Book]):
+        for book in list_of_books:
+            if int(book.release_date) > 1900:
+                print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
+
+    def print_authors_by_letter(self, list_of_authors: list[Author], let: str):
+        for author in list_of_authors:
+            if author.name[0] == let:
+                print(f'Author: {author.name}, Birth year: {author.birth_year}, Books: {[book.title for book in author.books]}')
+
+    def print_authors_with_more_than_N_books(self, list_of_authors: list[Author], N):
+        for author in list_of_authors:
+            if len(author.books) > N:
+                print(f'Author: {author.name}, Books: {[book.title for book in author.books]}')
+
+    def print_authors_whith_N_books(self, list_of_authors: list[Author], N):
+        for a in list_of_authors:
+            if len(a.books) == N:
+                print(f'Author: {a.name}, Books: {[book.title for book in a.books]}')
+
+
+    def authors_with_1_book_change_name(self, list_of_authors: list[Author], authors_with_N_book):
+        change_name = authors_with_N_book
 
 class DBManager:
     def __init__(self, db_file: str):
