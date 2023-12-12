@@ -3,8 +3,9 @@ from __future__ import annotations
 import sqlite3
 from typing import List, Dict
 import random
+import copy
 
- 
+
 class Author:
     def __init__(self, name, birth_year, id = 0):
         if id == 0:
@@ -14,7 +15,6 @@ class Author:
         self.name = name
         self.birth_year = birth_year
         self.books: list[Book] = [] # Список книг, написанных автором
-
 
     def add_book(self, book: Book):
         self.books.append(book)
@@ -54,29 +54,43 @@ class Library:
         for book in list_of_books:
             print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
 
-    def print_books_after_1900y(self, list_of_books: list[Book]):
+    def get_books_since_given_year(self, list_of_books: list[Book], date):
+        list_b = []
         for book in list_of_books:
-            if int(book.release_date) > 1900:
-                print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
+            if int(book.release_date) > date:
+                list_b.append(book)
+        return list_b
 
-    def print_authors_by_letter(self, list_of_authors: list[Author], let: str):
+    def get_authors_by_given_letter(self, list_of_authors: list[Author], let: str):
+        list_a = []
         for author in list_of_authors:
             if author.name[0] == let:
-                print(f'Author: {author.name}, Birth year: {author.birth_year}, Books: {[book.title for book in author.books]}')
+                list_a.append(author)
+        return list_a
 
-    def print_authors_with_more_than_N_books(self, list_of_authors: list[Author], N):
+    def get_authors_with_more_than_n_books(self , list_of_authors: list[Author] , N):
+        list_a = []
         for author in list_of_authors:
             if len(author.books) > N:
-                print(f'Author: {author.name}, Books: {[book.title for book in author.books]}')
+                list_a.append(author)
+        return list_a
 
-    def print_authors_whith_N_books(self, list_of_authors: list[Author], N):
+    def get_authors_with_n_books(self , list_of_authors: list[Author] , N):
+        list_a = []
         for a in list_of_authors:
             if len(a.books) == N:
-                print(f'Author: {a.name}, Books: {[book.title for book in a.books]}')
+                list_a.append(a)
+        return list_a
 
+    def get_books_with_n_words_in_title(self , list_of_books: list[Book] , N):
+        list_b = []
+        for book in list_of_books:
+            words = book.title.split()
+            len_of_list = len(words)
+            if len_of_list == N:
+                list_b.append(book)
+        return list_b
 
-    def authors_with_1_book_change_name(self, list_of_authors: list[Author], authors_with_N_book):
-        change_name = authors_with_N_book
 
 class DBManager:
     def __init__(self, db_file: str):
