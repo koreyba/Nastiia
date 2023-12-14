@@ -82,7 +82,7 @@ class Library:
                 list_a.append(a)
         return list_a
 
-    def get_books_with_n_words_in_title(self , list_of_books: list[Book] , N):
+    def get_books_with_n_words_in_title(self , list_of_books: list[Book], N):
         list_b = []
         for book in list_of_books:
             words = book.title.split()
@@ -91,6 +91,27 @@ class Library:
                 list_b.append(book)
         return list_b
 
+    def get_authors_of_books(self, list_of_books: list[Book]):
+        list_of_authors: list[Author] = []
+        for book in list_of_books:
+            list_of_authors.append(book.author)
+
+        return list_of_authors
+
+    def get_books_of_authors(self, list_of_authors: list[Author]):
+        list_of_books: list[Book] = []
+        for author in list_of_authors:
+            for book in author.books:
+                list_of_books.append(book)
+
+        return list_of_books
+
+    def get_authors_between_two_years_of_born(self, list_of_authors: list[Author], from_year, before_year):
+        list_of_birth = []
+        for author in list_of_authors:
+            if from_year > author.birth_year > before_year:
+                list_of_birth.append(author)
+        return list_of_birth
 
 class DBManager:
     def __init__(self, db_file: str):
