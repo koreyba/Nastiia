@@ -1,4 +1,6 @@
+
 from classes import Library
+
 
 library = Library()
 all_authors = library.get_all_authors()
@@ -12,7 +14,7 @@ print('Книги за заданным годом')
 print()
 library.print_books(books_by_year)
 
-authors_by_letter = library.get_authors_by_given_letter(all_authors, 'Л')
+authors_by_letter = library.get_authors_by_given_letter(all_authors, 'С')
 print('Авторы за заданной буквой:')
 print()
 library.print_authors(authors_by_letter)
@@ -61,3 +63,8 @@ authors_by_L = library.get_authors_by_given_letter(all_authors, 'Л')
 books = library.get_books_of_authors(authors_by_L)
 books_with_N_words = library.get_books_with_n_words_in_title(books, 2)
 library.print_books(books_with_N_words)
+library.print_authors(all_authors)
+print('\n Добавление автора: ')
+library.add_new_author()
+print('\n Добавление книги')
+library.add_new_book()

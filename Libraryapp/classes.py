@@ -6,14 +6,16 @@ import random
 import copy
 
 
+
+
 class Author:
     def __init__(self, name, birth_year, id = 0):
         if id == 0:
             self.id = random.randint(3000, 10000000)
         else:
             self.id = id
-        self.name = name
-        self.birth_year = birth_year
+        self.name: str = name
+        self.birth_year: int = birth_year
         self.books: list[Book] = [] # Список книг, написанных автором
 
     def add_book(self, book: Book):
@@ -26,9 +28,9 @@ class Book:
             self.id = random.randint(3000, 10000000)
         else:
             self.id = id
-        self.title = title
-        self.release_date = release_date
-        self.price = price
+        self.title: str = title
+        self.release_date: int = release_date
+        self.price: float = price
         self.author: Author = author  # Экземпляр класса Author
 
 
@@ -112,6 +114,27 @@ class Library:
             if from_year > author.birth_year > before_year:
                 list_of_birth.append(author)
         return list_of_birth
+
+    def add_new_author(self):
+        name = input("Enter author name: ")
+        birth_year = input("Enter author's year of birth: ")
+        author = Author(name, birth_year)
+        self.db_manager.save_author(author)
+
+    def __get_author_by_name__(self, authors: list[Author], name):
+        for author in authors:
+            if author.name == name:
+                return author
+
+    def add_new_book(self):
+        title = input("Enter book title: ")
+        release_date = input("Enter book's release date: ")
+        price = input("Enter book's price: ")
+        name = input("Enter author name: ")
+        authors = self.db_manager.get_all_authors()
+        author = self.__get_author_by_name__(authors, name)
+        book = Book(title, release_date, price, author)
+        self.db_manager.save_book(book)
 
 class DBManager:
     def __init__(self, db_file: str):
