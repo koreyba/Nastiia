@@ -52,9 +52,13 @@ class Library:
             # for b in a.books:
             #     print(b.title)
 
-    def print_books(self, list_of_books: list[Book]):
+    def print_books(self, list_of_books: list[Book], to_print_authors = True):
         for book in list_of_books:
-            print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
+            if to_print_authors is True:
+                print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
+            else:
+                print(
+                    f'Book: {book.title}, Release date: {book.release_date}')
 
     def get_books_since_given_year(self, list_of_books: list[Book], date):
         list_b = []
@@ -70,17 +74,29 @@ class Library:
                 list_a.append(author)
         return list_a
 
-    def get_authors_with_more_than_n_books(self , list_of_authors: list[Author] , N):
+    def is_author_has_books_more_then(self, author: Author, n):
+        if len(author.books) > n:
+            return True
+        else:
+            return False
+
+    def get_authors_with_more_than_n_books(self, list_of_authors: list[Author], N):
         list_a = []
         for author in list_of_authors:
-            if len(author.books) > N:
+            if self.is_author_has_books_more_then(author, N):
                 list_a.append(author)
         return list_a
 
-    def get_authors_with_n_books(self , list_of_authors: list[Author] , N):
+    def is_author_has_n_books(self, author: Author, n):
+        if len(author.books) == n:
+            return True
+        else:
+            return False
+
+    def get_authors_with_n_books(self , list_of_authors: list[Author], N):
         list_a = []
         for a in list_of_authors:
-            if len(a.books) == N:
+            if self.is_author_has_n_books(a, N):
                 list_a.append(a)
         return list_a
 
@@ -108,12 +124,33 @@ class Library:
 
         return list_of_books
 
-    def get_authors_between_two_years_of_born(self, list_of_authors: list[Author], from_year, before_year):
+    def get_authors_birth_year_after(self, list_of_authors: list[Author], year: int):
         list_of_birth = []
         for author in list_of_authors:
-            if from_year > author.birth_year > before_year:
+            if author.birth_year > year:
                 list_of_birth.append(author)
         return list_of_birth
+
+    def get_authors_birth_year_before(self, list_of_authors: list[Author], year: int):
+        list_of_birth = []
+        for author in list_of_authors:
+            if author.birth_year < year:
+                list_of_birth.append(author)
+        return list_of_birth
+
+    def gef_price_of_book_lower_then(self, list_of_books: list[Book], price: float):
+        price_list = []
+        for book in list_of_books:
+            if book.price < price:
+                price_list.append(book)
+        return price_list
+
+    def gef_price_of_book_higher_then(self, list_of_books: list[Book], price: float):
+        price_list = []
+        for book in list_of_books:
+            if book.price > price:
+                price_list.append(book)
+        return price_list
 
     def add_new_author(self):
         name = input("Enter author name: ")
@@ -135,6 +172,15 @@ class Library:
         author = self.__get_author_by_name__(authors, name)
         book = Book(title, release_date, price, author)
         self.db_manager.save_book(book)
+
+    def get_books_with_n_letter_in_i_word(self, list_of_books: list[Book], n: str, index):
+        book_list = []
+        for book in list_of_books:
+            words = book.title.split()
+            if len(words) > index and words[index].startswith(n):
+                book_list.append(book)
+        return book_list
+
 
 class DBManager:
     def __init__(self, db_file: str):

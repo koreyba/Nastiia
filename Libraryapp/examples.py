@@ -4,7 +4,7 @@ from classes import Book, Author
 # Connect to DB:
 db_manager = DBManager("mydatabase.db")
 
-# How to add a new Author with his books:
+# How to add a new Author w ith his books:
 author = Author('Nastia', 1992)
 book = Book("Never written book", 2023, 0, author)
 author.add_book(book)
