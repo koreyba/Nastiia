@@ -1,12 +1,15 @@
 
 from classes import Library
 
+# vowels = "аеиоуыэюя"
+# consonants = "бвгджзйклмнпрстфхцчшщъь"
+
 library = Library()
 authors = library.get_all_authors()
-authors = library.get_authors_by_given_letter(authors, "А")
-authors2 = library.get_authors_by_given_letter(library.get_all_authors(), "М")
-authors = library.get_authors_birth_year_after(authors + authors2, 1800)
+authors = library.get_authors_by_vowels_letter(authors, 'бвгджзйклмнпрстфхцчшщъь')
+authors = library.get_authors_with_more_than_n_books(authors, 1)
 library.print_authors(authors)
+
 
 """
 получить книги авторов Н-годов, у которых цена больше или меньше значения, напечатать список книг

@@ -181,6 +181,12 @@ class Library:
                 book_list.append(book)
         return book_list
 
+    def get_authors_by_vowels_letter(self, list_of_author: list[Author], first_letter):
+        authors_list = []
+        for author in list_of_author:
+            if author.name[0].lower() in first_letter:
+                authors_list.append(author)
+        return authors_list
 
 class DBManager:
     def __init__(self, db_file: str):
