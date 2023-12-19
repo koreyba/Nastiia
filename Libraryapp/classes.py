@@ -6,6 +6,15 @@ import random
 import copy
 
 
+class Comment:
+    def __init__(self, text: string, rating: float, is_positive: bool, id = 0):
+        if id == 0:
+            self.id = random.randint(3000, 10000000)
+        else:
+            self.id = id
+        self.text = text
+        self.rating = rating
+        self.is_positive = is_positive
 
 
 class Author:
@@ -32,6 +41,10 @@ class Book:
         self.release_date: int = release_date
         self.price: float = price
         self.author: Author = author  # Экземпляр класса Author
+        self.comments: list[Comment] = []  # List to store comments
+
+    def add_comment(self, comment: Comment):
+        self.comments.append(comment)
 
 
 class Library:
@@ -45,6 +58,13 @@ class Library:
     def get_all_authors(self):
         authors = self.db_manager.get_all_authors()
         return authors
+    
+    def load_comments_for_books(self, list_of_books: list [Book]):
+        for book in list_of_books:
+            book_comments = self.db_manager.get_comments_by_book_id(book.id)
+            for comment in book_comments:
+                book.add_comment(comment)
+        return list_of_books
 
     def print_authors(self, list_of_authors: list[Author]):
         for a in list_of_authors:
@@ -186,6 +206,20 @@ class DBManager:
     def __init__(self, db_file: str):
         self.conn = sqlite3.connect(db_file)
         self.__create_tables()
+        
+    
+    def save_comment(self, comment: Comment, book: Book):
+        cursor = self.conn.cursor()
+        cursor.execute("INSERT INTO comments (id, text, rating, is_positive, book_id) VALUES (?, ?, ?, ?, ?)",
+                       (comment.id, comment.text, comment.rating, comment.is_positive, book.id))
+        self.conn.commit()
+
+
+    def get_comments_by_book_id(self, book_id: int) -> List[Comment]:
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT id, text, rating, is_positive FROM comments WHERE book_id = ?", (book_id,))
+        comments_data = cursor.fetchall()
+        return [Comment(text, rating, is_positive, id) for id, text, rating, is_positive in comments_data]
 
 
     def __create_tables(self):
@@ -201,6 +235,13 @@ class DBManager:
                             price REAL NOT NULL,
                             author_id INTEGER,
                             FOREIGN KEY (author_id) REFERENCES authors (id))''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS comments (
+                            id INTEGER PRIMARY KEY,
+                            text TEXT NOT NULL,
+                            rating REAL NOT NULL,
+                            is_positive BOOLEAN NOT NULL,
+                            book_id INTEGER,
+                            FOREIGN KEY (book_id) REFERENCES books (id))''')
         self.conn.commit()
 
 
