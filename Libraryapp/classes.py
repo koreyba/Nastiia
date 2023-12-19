@@ -59,7 +59,7 @@ class Library:
         authors = self.db_manager.get_all_authors()
         return authors
     
-    def load_comments_for_books(self, list_of_books: list [Book]):
+    def load_comments_for_books(self, list_of_books: list[Book]):
         for book in list_of_books:
             book_comments = self.db_manager.get_comments_by_book_id(book.id)
             for comment in book_comments:
