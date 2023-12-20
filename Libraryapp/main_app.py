@@ -1,3 +1,4 @@
+import copy
 
 from classes import Library
 
@@ -5,11 +6,14 @@ from classes import Library
 # consonants = "бвгджзйклмнпрстфхцчшщъь"
 
 library = Library()
-authors = library.get_all_authors()
-authors = library.get_authors_by_vowels_letter(authors, 'бвгджзйклмнпрстфхцчшщъь')
-authors = library.get_authors_with_more_than_n_books(authors, 1)
-library.print_authors(authors)
-
+books = library.get_all_books()
+books_with_comments = library.load_comments_for_books(books)
+for my_book in books_with_comments:
+    com = library.get_comments_with_rat_more_then(my_book.comments, 4.00)
+    if len(com) != 0:
+        book = copy.deepcopy(my_book)
+        book.comments = com
+        library.print_book_with_comments(book)
 
 """
 получить книги авторов Н-годов, у которых цена больше или меньше значения, напечатать список книг

@@ -72,13 +72,34 @@ class Library:
             # for b in a.books:
             #     print(b.title)
 
-    def print_books(self, list_of_books: list[Book], to_print_authors = True):
+    def print_books(self, list_of_books: list[Book], to_print_authors=True):
         for book in list_of_books:
             if to_print_authors is True:
                 print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
             else:
-                print(
-                    f'Book: {book.title}, Release date: {book.release_date}')
+                print(f'Book: {book.title}, Release date: {book.release_date}')
+
+    def print_book_with_comments(self, book: Book):
+        comments_str = [f"Text: {comment.text}, Ratio: {comment.rating}, +/-: {str(comment.is_positive)}" for comment in book.comments]
+
+        print(f'Book: {book.title}, Comments: {comments_str}')
+
+    def print_comments(self, list_of_com: list[Comment]):
+        for comment in list_of_com:
+            print(f'Text: {comment.text}, Ratio: {comment.rating}, +/-: {comment.is_positive}')
+
+    def is_comment_rat_is_more_then(self, comment: Comment, n):
+        if comment.rating > n:
+            return True
+        else:
+            return False
+
+    def get_comments_with_rat_more_then(self, comments: list[Comment], n):
+        list_of_comments = []
+        for comment in comments:
+            if self.is_comment_rat_is_more_then(comment, n):
+                list_of_comments.append(comment)
+        return list_of_comments
 
     def get_books_since_given_year(self, list_of_books: list[Book], date):
         list_b = []
@@ -225,7 +246,7 @@ class DBManager:
         cursor = self.conn.cursor()
         cursor.execute("SELECT id, text, rating, is_positive FROM comments WHERE book_id = ?", (book_id,))
         comments_data = cursor.fetchall()
-        return [Comment(text, rating, is_positive, id) for id, text, rating, is_positive in comments_data]
+        return [Comment(text, rating, bool(is_positive), id) for id, text, rating, is_positive in comments_data]
 
 
     def __create_tables(self):
