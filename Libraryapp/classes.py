@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from typing import List, Dict
 import random
-import copy
+
 
 
 class Comment:
@@ -16,6 +16,11 @@ class Comment:
         self.rating = rating
         self.is_positive = is_positive
 
+    def is_comment_rat_is_more_then(self, n):
+        if self.rating > n:
+            return True
+        else:
+            return False
 
 class Author:
     def __init__(self, name, birth_year, id = 0):
@@ -30,9 +35,24 @@ class Author:
     def add_book(self, book: Book):
         self.books.append(book)
 
+    def is_author_has_n_books(self, n):
+        if len(self.books) == n:
+            return True
+        else:
+            return False
+
+    def is_author_has_books_more_then(self, n):
+        if len(self.books) > n:
+            return True
+        else:
+            return False
+
 
 class Book:
+    bla = 0
+
     def __init__(self, title: str, release_date, price, author: Author, id = 0):
+        Book.bla += 1
         if id == 0:
             self.id = random.randint(3000, 10000000)
         else:
@@ -46,67 +66,51 @@ class Book:
     def add_comment(self, comment: Comment):
         self.comments.append(comment)
 
+    def get_comments_with_rat_more_then(self, n):
+        list_of_comments = []
+        for comment in self.comments:
+            if comment.is_comment_rat_is_more_then(n):
+                list_of_comments.append(comment)
+        return list_of_comments
 
-class Library:
-    def __init__(self):
-        self.db_manager = DBManager("mydatabase.db")
+    def get_rating(self):
+        sum = 0
+        for comment in self.comments:
+            sum += comment.rating
+        return round(sum / len(self.comments), 2)
 
-    def get_all_books(self):
-        books = self.db_manager.get_all_books()
-        return books
 
-    def get_all_authors(self):
-        authors = self.db_manager.get_all_authors()
-        return authors
-    
-    def load_comments_for_books(self, list_of_books: list[Book]):
-        for book in list_of_books:
-            book_comments = self.db_manager.get_comments_by_book_id(book.id)
-            for comment in book_comments:
-                book.add_comment(comment)
-        return list_of_books
-
-    def print_authors(self, list_of_authors: list[Author]):
+class Library_Printer:
+    def print_authors(self , list_of_authors: list[Author]):
         for a in list_of_authors:
             print(f'Author: {a.name}, Birth year: {a.birth_year}, Books: {[book.title for book in a.books]}')
             # for b in a.books:
             #     print(b.title)
 
-    def print_books(self, list_of_books: list[Book], to_print_authors=True):
+    def print_books(self , list_of_books: list[Book] , to_print_authors=True):
         for book in list_of_books:
             if to_print_authors is True:
                 print(f'Book: {book.title}, Release date: {book.release_date}, Price: {book.price}, Author: {book.author.name}')
             else:
                 print(f'Book: {book.title}, Release date: {book.release_date}')
 
+    def print_comments(self, list_of_com: list[Comment]):
+        for comment in list_of_com:
+            print(f'Text: {comment.text}, Ratio: {comment.rating}, +/-: {comment.is_positive}')
+
     def print_book_with_comments(self, book: Book):
         comments_str = [f"Text: {comment.text}, Ratio: {comment.rating}, +/-: {str(comment.is_positive)}" for comment in book.comments]
 
         print(f'Book: {book.title}, Comments: {comments_str}')
 
-    def print_comments(self, list_of_com: list[Comment]):
-        for comment in list_of_com:
-            print(f'Text: {comment.text}, Ratio: {comment.rating}, +/-: {comment.is_positive}')
 
-    def is_comment_rat_is_more_then(self, comment: Comment, n):
-        if comment.rating > n:
-            return True
-        else:
-            return False
+class Authors_Library:
+    def __init__(self):
+        self.db_manager = DBManager("mydatabase.db")
 
-    def get_comments_with_rat_more_then(self, comments: list[Comment], n):
-        list_of_comments = []
-        for comment in comments:
-            if self.is_comment_rat_is_more_then(comment, n):
-                list_of_comments.append(comment)
-        return list_of_comments
-
-    def get_books_since_given_year(self, list_of_books: list[Book], date):
-        list_b = []
-        for book in list_of_books:
-            if int(book.release_date) > date:
-                list_b.append(book)
-        return list_b
+    def get_all_authors(self):
+        authors = self.db_manager.get_all_authors()
+        return authors
 
     def get_authors_by_given_letter(self, list_of_authors: list[Author], let: str):
         list_a = []
@@ -115,47 +119,19 @@ class Library:
                 list_a.append(author)
         return list_a
 
-    def is_author_has_books_more_then(self, author: Author, n):
-        if len(author.books) > n:
-            return True
-        else:
-            return False
-
     def get_authors_with_more_than_n_books(self, list_of_authors: list[Author], N):
         list_a = []
         for author in list_of_authors:
-            if self.is_author_has_books_more_then(author, N):
+            if author.is_author_has_books_more_then(N):
                 list_a.append(author)
         return list_a
 
-    def is_author_has_n_books(self, author: Author, n):
-        if len(author.books) == n:
-            return True
-        else:
-            return False
-
-    def get_authors_with_n_books(self , list_of_authors: list[Author], N):
+    def get_authors_with_n_books(self, list_of_authors: list[Author], N):
         list_a = []
         for a in list_of_authors:
-            if self.is_author_has_n_books(a, N):
+            if a.is_author_has_n_books(N):
                 list_a.append(a)
         return list_a
-
-    def get_books_with_n_words_in_title(self , list_of_books: list[Book], N):
-        list_b = []
-        for book in list_of_books:
-            words = book.title.split()
-            len_of_list = len(words)
-            if len_of_list == N:
-                list_b.append(book)
-        return list_b
-
-    def get_authors_of_books(self, list_of_books: list[Book]):
-        list_of_authors: list[Author] = []
-        for book in list_of_books:
-            list_of_authors.append(book.author)
-
-        return list_of_authors
 
     def get_books_of_authors(self, list_of_authors: list[Author]):
         list_of_books: list[Book] = []
@@ -179,6 +155,61 @@ class Library:
                 list_of_birth.append(author)
         return list_of_birth
 
+    def add_new_author(self):
+        name = input("Enter author name: ")
+        birth_year = input("Enter author's year of birth: ")
+        author = Author(name, birth_year)
+        self.db_manager.save_author(author)
+
+    def get_author_by_name(self, authors: list[Author], name):
+        for author in authors:
+            if author.name == name:
+                return author
+
+    def get_authors_by_vowels_letter(self, list_of_author: list[Author], first_letter):
+        authors_list = []
+        for author in list_of_author:
+            if author.name[0].lower() in first_letter:
+                authors_list.append(author)
+        return authors_list
+
+
+class Books_Library:
+    def __init__(self):
+        self.db_manager = DBManager("mydatabase.db")
+
+    def get_all_books(self):
+        books = self.db_manager.get_all_books()
+        return books
+
+    def load_comments_for_books(self, list_of_books: list[Book]):
+        for book in list_of_books:
+            book.comments = self.db_manager.get_comments_by_book_id(book.id)
+        return list_of_books
+
+    def get_books_since_given_year(self, list_of_books: list[Book], date):
+        list_b = []
+        for book in list_of_books:
+            if int(book.release_date) > date:
+                list_b.append(book)
+        return list_b
+
+    def get_books_with_n_words_in_title(self , list_of_books: list[Book], N):
+        list_b = []
+        for book in list_of_books:
+            words = book.title.split()
+            len_of_list = len(words)
+            if len_of_list == N:
+                list_b.append(book)
+        return list_b
+
+    def get_authors_of_books(self, list_of_books: list[Book]):
+        list_of_authors: list[Author] = []
+        for book in list_of_books:
+            list_of_authors.append(book.author)
+
+        return list_of_authors
+
     def gef_price_of_book_lower_then(self, list_of_books: list[Book], price: float):
         price_list = []
         for book in list_of_books:
@@ -193,24 +224,13 @@ class Library:
                 price_list.append(book)
         return price_list
 
-    def add_new_author(self):
-        name = input("Enter author name: ")
-        birth_year = input("Enter author's year of birth: ")
-        author = Author(name, birth_year)
-        self.db_manager.save_author(author)
-
-    def __get_author_by_name__(self, authors: list[Author], name):
-        for author in authors:
-            if author.name == name:
-                return author
-
     def add_new_book(self):
         title = input("Enter book title: ")
         release_date = input("Enter book's release date: ")
         price = input("Enter book's price: ")
         name = input("Enter author name: ")
         authors = self.db_manager.get_all_authors()
-        author = self.__get_author_by_name__(authors, name)
+        author = Authors_Library().get_author_by_name(authors, name)
         book = Book(title, release_date, price, author)
         self.db_manager.save_book(book)
 
@@ -222,12 +242,14 @@ class Library:
                 book_list.append(book)
         return book_list
 
-    def get_authors_by_vowels_letter(self, list_of_author: list[Author], first_letter):
-        authors_list = []
-        for author in list_of_author:
-            if author.name[0].lower() in first_letter:
-                authors_list.append(author)
-        return authors_list
+
+class Library:
+    def __init__(self):
+        self.db_manager = DBManager("mydatabase.db")
+        self.printer = Library_Printer()
+        self.authors_lib = Authors_Library()
+        self.books_lib = Books_Library()
+
 
 class DBManager:
     def __init__(self, db_file: str):
@@ -312,7 +334,7 @@ class DBManager:
         authors = {id: Author(name, birth_year, id) for id, name, birth_year in authors_data}
 
         for author in authors.values():
-            author.books = self.__get_books_by_author_id(author.id, authors)
+            author.books = self.__get_books_by_author_id(author.id , authors)
 
         return list(authors.values())
 

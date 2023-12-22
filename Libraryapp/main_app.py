@@ -1,27 +1,26 @@
 import copy
 
-from classes import Library
+from classes import Library , Book , Author , Library_Printer , Authors_Library , Books_Library
 
 # vowels = "аеиоуыэюя"
 # consonants = "бвгджзйклмнпрстфхцчшщъь"
 
 library = Library()
-books = library.get_all_books()
-books_with_comments = library.load_comments_for_books(books)
-for my_book in books_with_comments:
-    com = library.get_comments_with_rat_more_then(my_book.comments, 4.00)
-    if len(com) != 0:
-        book = copy.deepcopy(my_book)
-        book.comments = com
-        library.print_book_with_comments(book)
+libraryPri = Library_Printer()
+authors_lib = Authors_Library()
+books_lib = Books_Library()
+
+books = library.books_lib.get_all_books()
+books = library.books_lib.load_comments_for_books(books)
+for book in books:
+    rating = book.get_rating()
+    print(book.title, rating)
 
 """
 получить книги авторов Н-годов, у которых цена больше или меньше значения, напечатать список книг
 авторы после 1800 г.р. с книгами цена, которых меньше чем значение.
 
 *написать сортировку книги и авторов по алфавиту, по году рождения и по колличеству книг 
-напечатать список книг и их комменты,
-напечатать коменты, у которых оценка больше 3
 
 посчитать рейтинг книги, на основе всех оценок
 вывести только позитивные коменты/негативные
