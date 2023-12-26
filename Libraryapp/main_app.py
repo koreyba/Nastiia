@@ -10,11 +10,9 @@ libraryPri = Library_Printer()
 authors_lib = Authors_Library()
 books_lib = Books_Library()
 
-books = library.books_lib.get_all_books()
-books = library.books_lib.load_comments_for_books(books)
-for book in books:
-    rating = book.get_rating()
-    print(book.title, rating)
+authors = authors_lib.get_all_authors()
+authors = authors_lib.sort_authors_by_birth_date(authors, False)
+libraryPri.print_authors(authors)
 
 """
 получить книги авторов Н-годов, у которых цена больше или меньше значения, напечатать список книг
@@ -22,8 +20,6 @@ for book in books:
 
 *написать сортировку книги и авторов по алфавиту, по году рождения и по колличеству книг 
 
-посчитать рейтинг книги, на основе всех оценок
-вывести только позитивные коменты/негативные
 
 """
 

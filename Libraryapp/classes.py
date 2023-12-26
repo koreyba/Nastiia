@@ -79,6 +79,9 @@ class Book:
             sum += comment.rating
         return round(sum / len(self.comments), 2)
 
+    def get_comments(self, only_positive: bool):
+        return [comment for comment in self.comments if comment.is_positive == only_positive]
+
 
 class Library_Printer:
     def print_authors(self , list_of_authors: list[Author]):
@@ -172,6 +175,25 @@ class Authors_Library:
             if author.name[0].lower() in first_letter:
                 authors_list.append(author)
         return authors_list
+
+    def sort_authors_by_birth_date(self, list_of_author: list[Author], is_ascending: bool):
+        for i in range(len(list_of_author)):
+            author = list_of_author[i]
+            j = i - 1
+            if is_ascending:
+                while list_of_author[j].birth_year < author.birth_year and j >= 0:
+                    j = self.__swap_authors_in_list__(author, j, list_of_author)
+            else:
+                while list_of_author[j].birth_year > author.birth_year and j >= 0:
+                    j = self.__swap_authors_in_list__(author, j, list_of_author)
+        return list_of_author
+
+    def __swap_authors_in_list__(self, author, j, list_of_author):
+        temp = list_of_author[j]
+        list_of_author[j] = author
+        list_of_author[j + 1] = temp
+        j = j - 1
+        return j
 
 
 class Books_Library:
