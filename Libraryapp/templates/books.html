@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="mt-3">
+    <h2>Книги</h2>
+    <form method="post" action="/sort_books">
+        <div class="form-group">
+            <select class="form-control" name="sort_method">
+                <option value="release_date">По дате релиза</option>
+                <option value="alphabet">По алфавиту</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Сортировать</button>
+    </form>
+    <ul class="list-group mt-3">
+        {% for book in books %}
+            <li class="list-group-item">{{ book.title }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
