@@ -1,39 +1,55 @@
 import pdb
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
 import random
 from flask import Flask
 from classes import Author, Book, Authors_Library, Books_Library, Comment, Library_Printer, Library, DBManager
 
 # Определение экземпляра Flask
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
 
 # Определение маршрутов
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/sort_authors', methods=['POST'])
 def sort_authors():
     sort_method = request.form.get('sort_method')
     library = Library()
     authors = library.authors_lib.get_all_authors()
+
+    filter_letter = session.get('filter_letter')
+    if filter_letter != '':
+        authors = library.authors_lib.get_authors_by_given_letter(authors, filter_letter)
+
+    filter_books_count = session.get('filter_books_count')
+    if filter_books_count is not None:
+        authors = library.authors_lib.get_authors_with_n_books(authors, filter_books_count)
+    
     if sort_method == 'birth_year':
         authors = library.authors_lib.sort_authors_by_birth_date(authors, True)
         return render_template('authors.html', authors=authors)
     if sort_method == 'alphabet':
         pass # TODO
 
+
 @app.route('/filter_by_first_later', methods=['POST'])
 def filter_aturhos_by_first_later():
     input_value = request.form.get('latter')
+    session['filter_letter'] = input_value
     library = Library()
     authors = library.authors_lib.get_all_authors()
     authors = library.authors_lib.get_authors_by_given_letter(authors, input_value)
     return render_template('authors.html', authors=authors)
 
+
 @app.route('/filter_by_books_count', methods=['POST'])
 def filter_authors_by_books_count():
     input_value = int(request.form.get('books_count'))
+    session['filter_books_count'] = input_value
     library = Library()
     authors = library.authors_lib.get_all_authors()
     authors = library.authors_lib.get_authors_with_n_books(authors, input_value)
