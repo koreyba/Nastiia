@@ -10,9 +10,9 @@ libraryPri = Library_Printer()
 authors_lib = Authors_Library()
 books_lib = Books_Library()
 
-authors = authors_lib.get_all_authors()
-authors = authors_lib.sort_authors_by_birth_date(authors, False)
-libraryPri.print_authors(authors)
+books = books_lib.get_all_books()
+books_sort = books_lib.sort_books_by_name(books)
+libraryPri.print_books(books_sort)
 
 """
 получить книги авторов Н-годов, у которых цена больше или меньше значения, напечатать список книг

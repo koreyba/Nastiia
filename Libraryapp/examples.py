@@ -1,4 +1,4 @@
-from Libraryapp.classes import DBManager
+from classes import DBManager
 from classes import Book, Author
 
 # Connect to DB:

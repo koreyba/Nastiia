@@ -22,18 +22,22 @@ def sort_authors():
     authors = library.authors_lib.get_all_authors()
 
     filter_letter = session.get('filter_letter')
+    session['filter_letter'] = ''
     if filter_letter != '':
         authors = library.authors_lib.get_authors_by_given_letter(authors, filter_letter)
 
     filter_books_count = session.get('filter_books_count')
+    session['filter_books_count'] = None
     if filter_books_count is not None:
         authors = library.authors_lib.get_authors_with_n_books(authors, filter_books_count)
-    
+
     if sort_method == 'birth_year':
         authors = library.authors_lib.sort_authors_by_birth_date(authors, True)
         return render_template('authors.html', authors=authors)
+    
     if sort_method == 'alphabet':
-        pass # TODO
+        authors = library.authors_lib.sort_authors_by_name(authors)
+        return render_template('authors.html', authors=authors)
 
 
 @app.route('/filter_by_first_later', methods=['POST'])
@@ -58,8 +62,29 @@ def filter_authors_by_books_count():
 
 @app.route('/sort_books', methods=['POST'])
 def sort_books():
-    # Логика обработки сортировки авторов
-    pass
+    sort_method = request.form.get('sort_method')
+    sort_order = session.get('sort_order')
+    if sort_order is None:
+        sort_order = True
+
+    if sort_order:
+        sort_order = False
+        session['sort_order'] = sort_order
+    else:
+        sort_order = True
+        session['sort_order'] = sort_order
+
+    library = Library()
+    books = library.books_lib.get_all_books()
+
+    if sort_method == 'release_date':
+        books = library.books_lib.sort_books_by_year(books, sort_order)
+        return render_template('books.html', books=books)
+
+    if sort_method == 'alphabet':
+        books = library.books_lib.sort_books_by_name(books)
+        return render_template('books.html', books=books)
+
 
 @app.route('/authors')
 def authors():
@@ -70,7 +95,9 @@ def authors():
 
 @app.route('/books')
 def books():
-    return render_template('books.html')  # предполагается, что у вас есть шаблон authors.html
+    library = Library()
+    books = library.books_lib.get_all_books()
+    return render_template('books.html' , books=books)
 
 
 # Запуск приложения

@@ -195,6 +195,8 @@ class Authors_Library:
         j = j - 1
         return j
 
+    def sort_authors_by_name(self, list_of_authors: list[Author]):
+        return sorted(list_of_authors, key=lambda x: x.name)
 
 class Books_Library:
     def __init__(self):
@@ -263,6 +265,28 @@ class Books_Library:
             if len(words) > index and words[index].startswith(n):
                 book_list.append(book)
         return book_list
+
+    def sort_books_by_year(self, list_of_books: list[Book], is_ascending: bool):
+        for i in range(len(list_of_books)):
+            book = list_of_books[i]
+            j = i - 1
+            if is_ascending:
+                while list_of_books[j].release_date < book.release_date and j >= 0:
+                    j = self.__swap_books_in_list__(book, j, list_of_books)
+            else:
+                while list_of_books[j].release_date > book.release_date and j >= 0:
+                    j = self.__swap_books_in_list__(book, j, list_of_books)
+        return list_of_books
+
+    def __swap_books_in_list__(self, book, j, list_of_books):
+        temp = list_of_books[j]
+        list_of_books[j] = book
+        list_of_books[j + 1] = temp
+        j = j - 1
+        return j
+
+    def sort_books_by_name(self, list_of_books: list[Book]):
+        return sorted(list_of_books, key=lambda x: x.title)
 
 
 class Library:
